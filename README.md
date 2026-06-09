@@ -32,7 +32,8 @@ Proces obiegu dokumentacji w systemie (od szkicu do zatwierdzenia):
 
    ```bash
    python get_fonts.py
-```bash
+
+  ```bash
     python seed.py
 
 3. **Uruchomienie środowiska:**
