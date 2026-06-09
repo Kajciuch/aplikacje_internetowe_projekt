@@ -1,0 +1,12 @@
+# Uruchomienie:  docker compose up --build
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=zmien-na-cos-losowego-w-produkcji
+    volumes:
+      - ./data-prod:/app/data-prod   # trwałość pliku bazy
+    restart: unless-stopped

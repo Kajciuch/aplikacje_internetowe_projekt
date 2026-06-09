@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Pulpit dziekanatu{% endblock %}
+{% block eyebrow %}Administracja systemu{% endblock %}
+{% block heading %}Dziekanat — {{ current_user.imie }}{% endblock %}
+
+{% block content %}
+
+<div class="grid grid-3 mb-3">
+  <div class="stat">
+    <p class="stat-label">Praktyki</p>
+    <p class="stat-value">{{ statystyki.praktyki }}</p>
+  </div>
+  <div class="stat">
+    <p class="stat-label">Studenci</p>
+    <p class="stat-value">{{ statystyki.studenci }}</p>
+  </div>
+  <div class="stat">
+    <p class="stat-label">Opiekunowie</p>
+    <p class="stat-value">{{ statystyki.opiekunowie }}</p>
+  </div>
+</div>
+
+{# --- Lista praktyk ---------------------------------------------------- #}
+<div class="card">
+  <h2 class="card-title">Wszystkie praktyki</h2>
+  {% if not praktyki %}
+    <p class="muted">Brak praktyk w systemie.</p>
+  {% else %}
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Album</th>
+        <th>Firma</th>
+        <th>Termin</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in praktyki %}
+      <tr>
+        <td><strong>{{ p.student_imie }} {{ p.student_nazwisko }}</strong></td>
+        <td class="mono small">{{ p.nr_albumu or '—' }}</td>
+        <td>{{ p.firma_nazwa or '—' }}</td>
+        <td class="mono small">{{ p.data_od or '—' }} → {{ p.data_do or '—' }}</td>
+        <td><span class="badge badge--Approved">{{ p.status }}</span></td>
+        <td class="right"><a href="{{ url_for('dok.praktyka', pid=p.id) }}" class="btn btn-sm btn-secondary">Otwórz</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+{# --- Użytkownicy ------------------------------------------------------ #}
+<div class="card" id="uzytkownicy">
+  <h2 class="card-title">Użytkownicy</h2>
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Imię i nazwisko</th>
+        <th>E-mail</th>
+        <th>Rola</th>
+        <th>Nr albumu</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in uzytkownicy %}
+      <tr>
+        <td><strong>{{ u.imie }} {{ u.nazwisko }}</strong></td>
+        <td class="mono small">{{ u.email }}</td>
+        <td>{{ ROLE_PL[u.rola] }}</td>
+        <td class="mono small">{{ u.nr_albumu or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

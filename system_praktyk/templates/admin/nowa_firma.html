@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Nowa firma{% endblock %}
+{% block eyebrow %}Administracja{% endblock %}
+{% block heading %}Nowa firma{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('admin.lista_firm') }}" class="btn btn-ghost">← Lista</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('admin.nowa_firma') }}" data-validate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <div class="field">
+      <label class="label" for="nazwa">Nazwa firmy</label>
+      <input type="text" name="nazwa" id="nazwa" required
+             placeholder="np. GE Vernova Polska Sp. z o.o.">
+    </div>
+    <div class="field">
+      <label class="label" for="adres">Adres</label>
+      <input type="text" name="adres" id="adres"
+             placeholder="np. ul. Stoczniowa 2, 82-300 Elbląg">
+    </div>
+    <div class="field">
+      <label class="label" for="nip">NIP</label>
+      <input type="text" name="nip" id="nip" placeholder="np. 5783025981">
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a href="{{ url_for('admin.lista_firm') }}" class="btn btn-secondary">Anuluj</a>
+    <button type="submit" class="btn btn-accent">Dodaj firmę</button>
+  </div>
+</form>
+{% endblock %}

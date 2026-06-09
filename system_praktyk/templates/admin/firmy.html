@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Firmy{% endblock %}
+{% block eyebrow %}Administracja{% endblock %}
+{% block heading %}Firmy / zakłady pracy{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('admin.nowa_firma') }}" class="btn btn-accent">+ Nowa firma</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  {% if not firmy %}
+  <p class="muted">Brak firm w bazie. Dodaj pierwszą.</p>
+  {% else %}
+  <table class="tbl">
+    <thead>
+      <tr><th>Nazwa</th><th>Adres</th><th>NIP</th></tr>
+    </thead>
+    <tbody>
+      {% for f in firmy %}
+      <tr>
+        <td><strong>{{ f.nazwa }}</strong></td>
+        <td class="small">{{ f.adres or '—' }}</td>
+        <td class="mono small">{{ f.nip or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Nowa praktyka{% endblock %}
+{% block eyebrow %}Administracja{% endblock %}
+{% block heading %}Nowa praktyka{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('main.dashboard') }}" class="btn btn-ghost">← Pulpit</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('admin.nowa_praktyka') }}" data-validate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Student i specjalność</h2>
+    <p class="card-sub">
+      Jeśli studenta nie ma na liście, najpierw <a href="{{ url_for('admin.nowy_uzytkownik') }}">utwórz konto</a>.
+    </p>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="student_id">Student</label>
+        <select name="student_id" id="student_id" required>
+          <option value="">— wybierz studenta —</option>
+          {% for s in studenci %}
+            <option value="{{ s.id }}">{{ s.nazwisko }} {{ s.imie }} · album {{ s.nr_albumu or '—' }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="rok_akademicki">Rok akademicki</label>
+        <input type="text" name="rok_akademicki" id="rok_akademicki" placeholder="np. 2024/2025">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="specjalnosc">Specjalność</label>
+      <select name="specjalnosc" id="specjalnosc">
+        <option value="">— wybierz specjalność —</option>
+        {% for s in SPECJALIZACJE %}
+          <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Firma i opiekunowie</h2>
+
+    <div class="field">
+      <label class="label" for="firma_id">Firma / zakład pracy</label>
+      <select name="firma_id" id="firma_id">
+        <option value="">— wybierz firmę —</option>
+        {% for f in firmy %}
+          <option value="{{ f.id }}">{{ f.nazwa }}</option>
+        {% endfor %}
+      </select>
+      <span class="label-hint">
+        Brakuje firmy? <a href="{{ url_for('admin.nowa_firma') }}">Dodaj nową</a>.
+      </span>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="opiekun_uczelniany_id">Opiekun uczelniany</label>
+        <select name="opiekun_uczelniany_id" id="opiekun_uczelniany_id">
+          <option value="">— wybierz opiekuna —</option>
+          {% for o in opiekunowie_u %}
+            <option value="{{ o.id }}">{{ o.imie }} {{ o.nazwisko }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="opiekun_zakladowy_id">Opiekun zakładowy</label>
+        <select name="opiekun_zakladowy_id" id="opiekun_zakladowy_id">
+          <option value="">— wybierz opiekuna —</option>
+          {% for o in opiekunowie_z %}
+            <option value="{{ o.id }}">{{ o.imie }} {{ o.nazwisko }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Termin praktyki</h2>
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="data_od">Data rozpoczęcia</label>
+        <input type="date" name="data_od" id="data_od">
+      </div>
+      <div class="field">
+        <label class="label" for="data_do">Data zakończenia</label>
+        <input type="date" name="data_do" id="data_do">
+      </div>
+      <div class="field">
+        <label class="label" for="porozumienie_nr">Numer porozumienia</label>
+        <input type="text" name="porozumienie_nr" id="porozumienie_nr" placeholder="np. P/2025/042">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Anuluj</a>
+    <button type="submit" class="btn btn-accent">Utwórz praktykę</button>
+  </div>
+</form>
+{% endblock %}

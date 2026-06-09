@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Edycja: Program i harmonogram{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('dok.podglad', dok_id=dok.id) }}" class="btn btn-ghost">← Powrót</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('dok.edytuj', dok_id=dok.id) }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Program praktyki — przykładowe prace dla efektów</h2>
+    <p class="card-sub">Dla każdego z 13 efektów uczenia się dopisz, jakie prace wykonasz w trakcie praktyki.</p>
+
+    {% for kod, opis in EFEKTY %}
+      {% set wart = dane.get('prace_efekty', {}).get(kod, '') %}
+      <div class="efekt-rzad">
+        <span class="efekt-kod">{{ kod }}</span>
+        <div class="efekt-opis">{{ opis }}</div>
+        <textarea name="praca_{{ kod }}" rows="2"
+                  placeholder="np. Konfiguracja serwera, code review, dokumentacja…">{{ wart }}</textarea>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Harmonogram praktyki</h2>
+    <p class="card-sub">Podziel 120 dni roboczych na działy/komórki. Suma musi wynosić 120.</p>
+
+    <div class="dyn-table">
+      <div class="dyn-header harmonogram-grid">
+        <div>Lp.</div><div>Dział / komórka</div><div>Liczba dni</div><div></div>
+      </div>
+      <div id="harm-rows">
+        {% set wpisy = dane.get('harmonogram', []) %}
+        {% if wpisy %}
+          {% for w in wpisy %}
+          <div class="dyn-row harmonogram-grid">
+            <div class="mono small muted" style="padding-top: 7px;">{{ loop.index }}</div>
+            <input type="text" name="harm_dzial[]" value="{{ w.dzial }}" placeholder="np. Dział IT — programowanie">
+            <input type="number" name="harm_dni[]" value="{{ w.dni }}" min="1" max="120" placeholder="dni">
+            <button type="button" class="del-row" title="Usuń">×</button>
+          </div>
+          {% endfor %}
+        {% else %}
+          {# 3 puste wiersze startowe #}
+          {% for _ in range(3) %}
+          <div class="dyn-row harmonogram-grid">
+            <div class="mono small muted" style="padding-top: 7px;">{{ loop.index }}</div>
+            <input type="text" name="harm_dzial[]" placeholder="np. Dział IT — programowanie">
+            <input type="number" name="harm_dni[]" min="1" max="120" placeholder="dni">
+            <button type="button" class="del-row" title="Usuń">×</button>
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <template id="tpl-harm-row">
+      <div class="dyn-row harmonogram-grid">
+        <div class="mono small muted" style="padding-top: 7px;">+</div>
+        <input type="text" name="harm_dzial[]" placeholder="np. Dział IT — programowanie">
+        <input type="number" name="harm_dni[]" min="1" max="120" placeholder="dni">
+        <button type="button" class="del-row" title="Usuń">×</button>
+      </div>
+    </template>
+
+    <button type="button" class="add-row" data-template="tpl-harm-row" data-target="harm-rows">+ Dodaj wiersz</button>
+
+    <p class="mt-3" style="font-size: 14px;">
+      Suma dni: <strong id="harm-suma" class="mono">0</strong> / <span class="mono muted">120</span>
+    </p>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="akcja" value="zapisz" class="btn btn-secondary">Zapisz szkic</button>
+    <button type="submit" name="akcja" value="zloz" class="btn btn-accent">Zapisz i złóż do recenzji</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Użytkownicy{% endblock %}
+{% block eyebrow %}Administracja{% endblock %}
+{% block heading %}Użytkownicy systemu{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('admin.nowy_uzytkownik') }}" class="btn btn-accent">+ Nowe konto</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <p class="card-sub">
+    Lista wszystkich kont w systemie. Kliknij <strong>Zaloguj jako…</strong>, aby
+    wejść na konto innego użytkownika (np. żeby zobaczyć system z perspektywy
+    studenta). Wrócisz do siebie banerem na górze ekranu.
+  </p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Imię i nazwisko</th>
+        <th>E-mail</th>
+        <th>Rola</th>
+        <th>Nr albumu</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in uzytkownicy %}
+      <tr>
+        <td><strong>{{ u.imie }} {{ u.nazwisko }}</strong></td>
+        <td class="mono small">{{ u.email }}</td>
+        <td>{{ ROLE_PL[u.rola] }}</td>
+        <td class="mono small">{{ u.nr_albumu or '—' }}</td>
+        <td class="right">
+          {% if u.id != current_user.id %}
+          <form method="post" action="{{ url_for('admin.zaloguj_jako', user_id=u.id) }}" style="display: inline;">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm btn-secondary"
+                    data-confirm="Wejść na konto {{ u.imie }} {{ u.nazwisko }}?">
+              Zaloguj jako…
+            </button>
+          </form>
+          {% else %}
+          <span class="muted small">to Ty</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

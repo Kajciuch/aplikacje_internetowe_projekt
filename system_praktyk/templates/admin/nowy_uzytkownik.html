@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Nowe konto{% endblock %}
+{% block eyebrow %}Administracja{% endblock %}
+{% block heading %}Nowy użytkownik{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('admin.lista_uzytkownikow') }}" class="btn btn-ghost">← Lista</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('admin.nowy_uzytkownik') }}" data-validate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Dane konta</h2>
+    <p class="card-sub">
+      Konta studentów powinny używać e-maila <code class="mono">indeks@student.ans-elblag.pl</code>.
+      Pracownicy uczelni: <code class="mono">imie.nazwisko@ans-elblag.pl</code>.
+    </p>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="imie">Imię</label>
+        <input type="text" name="imie" id="imie" required>
+      </div>
+      <div class="field">
+        <label class="label" for="nazwisko">Nazwisko</label>
+        <input type="text" name="nazwisko" id="nazwisko" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="email">E-mail</label>
+      <input type="email" name="email" id="email" required
+             placeholder="np. 21310@student.ans-elblag.pl">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="rola">Rola</label>
+        <select name="rola" id="rola" required>
+          <option value="">— wybierz rolę —</option>
+          {% for kod, nazwa in ROLE_PL.items() %}
+            <option value="{{ kod }}">{{ nazwa }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="nr_albumu">Numer albumu <span class="label-hint">(tylko studenci)</span></label>
+        <input type="text" name="nr_albumu" id="nr_albumu" placeholder="np. 21310">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="haslo">Hasło tymczasowe</label>
+      <input type="text" name="haslo" id="haslo" required minlength="6"
+             value="praktyki123">
+      <span class="label-hint">Użytkownik powinien zmienić je po pierwszym logowaniu.</span>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a href="{{ url_for('admin.lista_uzytkownikow') }}" class="btn btn-secondary">Anuluj</a>
+    <button type="submit" class="btn btn-accent">Utwórz konto</button>
+  </div>
+</form>
+{% endblock %}

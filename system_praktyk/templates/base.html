@@ -1,0 +1,110 @@
+{# Szkielet całej aplikacji — ciemny "grzbiet" nawigacji + papierowa treść. #}
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}System Obsługi Praktyk{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="layout">
+
+  {# ---------- Grzbiet (nawigacja boczna) ---------- #}
+  <aside class="spine">
+    <a class="wordmark" href="{{ url_for('main.dashboard') if current_user else url_for('auth.login') }}">
+      Praktyki<span class="dot">.</span>
+    </a>
+    <p class="spine-sub">Instytut Informatyki Stosowanej</p>
+
+    {% if current_user %}
+    <nav class="nav">
+      <a href="{{ url_for('main.dashboard') }}"
+         class="{{ 'active' if request.endpoint == 'main.dashboard' }}">
+        <span class="nav-ico">▦</span> Pulpit
+      </a>
+      <a href="{{ url_for('main.profil') }}"
+         class="{{ 'active' if request.endpoint == 'main.profil' }}">
+        <span class="nav-ico">◉</span> Profil
+      </a>
+
+      {% if current_user.rola == 'dziekanat' %}
+        <div class="nav-section">Administracja</div>
+        <a href="{{ url_for('admin.lista_uzytkownikow') }}"
+           class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.lista_uzy') or request.endpoint == 'admin.nowy_uzytkownik' }}">
+          <span class="nav-ico">◌</span> Użytkownicy
+        </a>
+        <a href="{{ url_for('admin.lista_firm') }}"
+           class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.list_firm') or request.endpoint == 'admin.nowa_firma' or request.endpoint == 'admin.lista_firm' }}">
+          <span class="nav-ico">◆</span> Firmy
+        </a>
+        <a href="{{ url_for('admin.nowa_praktyka') }}"
+           class="{{ 'active' if request.endpoint == 'admin.nowa_praktyka' }}">
+          <span class="nav-ico">+</span> Nowa praktyka
+        </a>
+      {% endif %}
+    </nav>
+
+    <div class="spine-foot">
+      <div class="who">
+        <span class="who-avatar">{{ current_user.imie[0] }}{{ current_user.nazwisko[0] }}</span>
+        <span class="who-meta">
+          <strong>{{ current_user.pelne_imie }}</strong>
+          <em>{{ current_user.rola_pl }}</em>
+        </span>
+      </div>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button class="logout" type="submit">Wyloguj</button>
+      </form>
+    </div>
+    {% endif %}
+  </aside>
+
+  {# ---------- Treść ---------- #}
+  <main class="content">
+    {% if impersonator_active %}
+    <div class="impersonate-bar">
+      <span>
+        <strong>Tryb administratora</strong> · Jesteś zalogowana jako
+        <strong>{{ current_user.pelne_imie }}</strong> ({{ current_user.rola_pl }}).
+      </span>
+      <form method="post" action="{{ url_for('admin.zakoncz_impersonacje') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-sm">Wróć do swojego konta</button>
+      </form>
+    </div>
+    {% endif %}
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">{% block eyebrow %}System Obsługi Praktyk{% endblock %}</p>
+        <h1 class="page-title">{% block heading %}{% endblock %}</h1>
+      </div>
+      {% block topbar_action %}{% endblock %}
+    </header>
+
+    {% with komunikaty = get_flashed_messages(with_categories=true) %}
+      {% if komunikaty %}
+        <div class="flashes">
+          {% for kat, tekst in komunikaty %}
+            <div class="flash flash--{{ kat }}">{{ tekst }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="foot">
+      Akademia Nauk Stosowanych w Elblągu · System Obsługi Praktyk Zawodowych
+    </footer>
+  </main>
+</div>
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

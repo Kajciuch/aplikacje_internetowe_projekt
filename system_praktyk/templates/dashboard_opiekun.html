@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Pulpit opiekuna{% endblock %}
+{% block eyebrow %}Praktyki pod Twoją opieką{% endblock %}
+{% block heading %}Dzień dobry, {{ current_user.imie }}.{% endblock %}
+
+{% block content %}
+
+{# --- Dokumenty oczekujące na recenzję ----------------------------------- #}
+<div class="card">
+  <h2 class="card-title">Do recenzji
+    <span class="badge badge--Submitted" style="margin-left: 8px;">{{ do_recenzji|length }}</span>
+  </h2>
+  {% if not do_recenzji %}
+    <p class="muted">Brak dokumentów oczekujących na Twoją ocenę.</p>
+  {% else %}
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Dokument</th>
+        <th>Student</th>
+        <th>Status</th>
+        <th>Zaktualizowano</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in do_recenzji %}
+      {% set d = r.dok %}
+      {% set p = r.praktyka %}
+      <tr>
+        <td>
+          <strong>{{ DOK[d.typ].ikona }} {{ DOK[d.typ].nazwa }}</strong>
+          <div class="muted small mono">Załącznik nr {{ DOK[d.typ].zalacznik }}</div>
+        </td>
+        <td>
+          {{ p.student_imie }} {{ p.student_nazwisko }}
+          <div class="muted small mono">album: {{ p.nr_albumu or '—' }}</div>
+        </td>
+        <td><span class="badge badge--{{ d.status.split(' ')[0] }}">{{ STATUS_PL[d.status] }}</span></td>
+        <td class="mono small">{{ d.zaktualizowano }}</td>
+        <td class="right">
+          <a href="{{ url_for('dok.podglad', dok_id=d.id) }}" class="btn btn-sm">Otwórz</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+{# --- Lista wszystkich praktyk pod opieką -------------------------------- #}
+<div class="card">
+  <h2 class="card-title">Praktyki, którymi się opiekujesz</h2>
+  {% if not praktyki %}
+    <p class="muted">Nie masz przypisanych praktyk.</p>
+  {% else %}
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Firma</th>
+        <th>Termin</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in praktyki %}
+      <tr>
+        <td>
+          {{ p.student_imie }} {{ p.student_nazwisko }}
+          <div class="muted small mono">album: {{ p.nr_albumu or '—' }}</div>
+        </td>
+        <td>{{ p.firma_nazwa or '—' }}</td>
+        <td class="mono small">{{ p.data_od or '—' }} → {{ p.data_do or '—' }}</td>
+        <td class="right">
+          <a href="{{ url_for('dok.praktyka', pid=p.id) }}" class="btn btn-secondary btn-sm">Otwórz</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+{% endblock %}

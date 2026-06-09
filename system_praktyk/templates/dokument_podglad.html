@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}{{ info.nazwa }}{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<div class="flex gap-2" style="align-items: center;">
+  <span class="badge badge--{{ dok.status.split(' ')[0] }}">{{ STATUS_PL[dok.status] }}</span>
+  {% if moze_edytowac %}
+    <a href="{{ url_for('dok.edytuj', dok_id=dok.id) }}" class="btn btn-accent btn-sm">Edytuj</a>
+  {% endif %}
+  <a href="{{ url_for('dok.pdf', dok_id=dok.id) }}" class="btn btn-secondary btn-sm">Pobierz PDF</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{# --- Dane studenta / praktyki (kontekst) -------------------------------- #}
+<div class="card mb-3">
+  <div class="grid grid-2">
+    <div>
+      <p class="label">Student</p>
+      <p style="margin: 4px 0 12px;">
+        <strong>{{ prakt.student_imie }} {{ prakt.student_nazwisko }}</strong>
+        <span class="mono small muted"> · album {{ prakt.nr_albumu or '—' }}</span>
+      </p>
+      <p class="label">Firma</p>
+      <p style="margin: 4px 0 0;">{{ prakt.firma_nazwa or '—' }}</p>
+    </div>
+    <div>
+      <p class="label">Termin</p>
+      <p class="mono" style="margin: 4px 0 12px;">{{ prakt.data_od or '—' }} → {{ prakt.data_do or '—' }}</p>
+      <p class="label">Ostatnia aktualizacja</p>
+      <p class="mono small" style="margin: 4px 0 0;">{{ dok.zaktualizowano }}</p>
+    </div>
+  </div>
+</div>
+
+{# --- Podgląd zawartości (różnie w zależności od typu) -------------------- #}
+<div class="card mb-3">
+  <h2 class="card-title">Treść dokumentu</h2>
+
+  {% if dok.typ == 'karta' %}
+    <p class="label">Ocena opisowa</p>
+    <div class="preview mt-1 mb-2">{{ dane.ocena_opisowa or '— nie wypełniono —' }}</div>
+    {% if dane.uwagi %}<p class="label">Uwagi</p><div class="preview mt-1">{{ dane.uwagi }}</div>{% endif %}
+
+  {% elif dok.typ == 'program' %}
+    <p class="label mb-1">Program — przykładowe prace dla efektów</p>
+    <table class="tbl mb-3">
+      <thead><tr><th style="width: 40px;">Nr</th><th>Przykładowe prace</th></tr></thead>
+      <tbody>
+        {% for kod, opis in EFEKTY %}
+        <tr>
+          <td class="mono">{{ kod }}</td>
+          <td>{{ dane.get('prace_efekty', {}).get(kod) or '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="label mb-1">Harmonogram</p>
+    <table class="tbl">
+      <thead><tr><th style="width: 50px;">Lp.</th><th>Dział / komórka</th><th style="width: 120px;">Liczba dni</th></tr></thead>
+      <tbody>
+        {% set ns = namespace(suma=0) %}
+        {% for w in dane.get('harmonogram', []) %}
+          {% set ns.suma = ns.suma + (w.dni|int) %}
+          <tr><td class="mono">{{ loop.index }}</td><td>{{ w.dzial or '—' }}</td><td class="mono">{{ w.dni }}</td></tr>
+        {% endfor %}
+        <tr><td></td><td><strong>Łącznie</strong></td><td class="mono"><strong>{{ ns.suma }}</strong> / 120</td></tr>
+      </tbody>
+    </table>
+
+  {% elif dok.typ == 'dziennik' %}
+    <p class="label mb-1">Wpisy ({{ dane.get('wpisy', [])|length }} / 120)</p>
+    <table class="tbl">
+      <thead><tr><th>Dzień</th><th>Data</th><th>Opis prac</th><th>Nr efektów</th></tr></thead>
+      <tbody>
+        {% for w in dane.get('wpisy', []) %}
+        <tr><td class="mono">{{ w.dzien }}</td><td class="mono small">{{ w.data }}</td><td>{{ w.opis }}</td><td class="mono">{{ w.efekty }}</td></tr>
+        {% else %}
+        <tr><td colspan="4" class="muted">— brak wpisów —</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% elif dok.typ == 'efekty' %}
+    <p>Liczba godzin: <strong>{{ dane.liczba_godzin or '—' }}</strong></p>
+    <table class="tbl mt-2">
+      <thead><tr><th style="width: 40px;">Nr</th><th>Efekt uczenia się</th><th style="width: 140px;">Potwierdzenie</th></tr></thead>
+      <tbody>
+        {% for kod, opis in EFEKTY %}
+        {% set wynik = dane.get('potwierdzenia', {}).get(kod, '—') %}
+        <tr>
+          <td class="mono">{{ kod }}</td>
+          <td>{{ opis }}</td>
+          <td>
+            {% if wynik == 'uzyskał' %}<span class="badge badge--Approved">uzyskał</span>
+            {% elif wynik == 'nie uzyskał' %}<span class="badge badge--Rejected">nie uzyskał</span>
+            {% else %}<span class="muted">—</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if dane.opinia_uczelniana %}
+      <p class="label mt-3">Opinia opiekuna uczelnianego</p>
+      <div class="preview mt-1">{{ dane.opinia_uczelniana }}</div>
+    {% endif %}
+
+  {% elif dok.typ == 'sprawozdanie' %}
+    <p class="label">Charakterystyka miejsca odbywania praktyki</p>
+    <div class="preview mt-1 mb-2">{{ dane.charakterystyka or '—' }}</div>
+    <p class="label">Opis i analiza wykonywanych prac</p>
+    <div class="preview mt-1 mb-2">{{ dane.opis_prac or '—' }}</div>
+    <p class="label">Wiedza i umiejętności (samoocena)</p>
+    <div class="preview mt-1">{{ dane.samoocena or '—' }}</div>
+
+  {% elif dok.typ == 'ankieta' %}
+    <p class="muted small">Ankieta jest anonimowa — wyniki nie są powiązane z danymi studenta.</p>
+    <table class="tbl mt-2">
+      <thead><tr><th style="width: 40px;">#</th><th>Stwierdzenie</th><th style="width: 180px;">Odpowiedź</th></tr></thead>
+      <tbody>
+        {% for pyt in PYTANIA %}
+        <tr>
+          <td class="mono">{{ loop.index }}</td>
+          <td>{{ pyt }}</td>
+          <td class="small">{{ dane.get('odpowiedzi', {}).get(loop.index|string, '—') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if dane.uwagi %}<p class="label mt-3">Uwagi</p><div class="preview mt-1">{{ dane.uwagi }}</div>{% endif %}
+  {% endif %}
+</div>
+
+{# --- Recenzja (jeśli można) --------------------------------------------- #}
+{% if moze_recenzowac and PRZEJSCIA[dok.status] %}
+<div class="card mb-3">
+  <h2 class="card-title">Recenzja dokumentu</h2>
+  <form method="post" action="{{ url_for('dok.recenzja', dok_id=dok.id) }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="status">Decyzja</label>
+        <select name="status" id="status" required>
+          {% for s in PRZEJSCIA[dok.status] %}
+            <option value="{{ s }}">{{ STATUS_PL[s] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      {% if dok.typ in ('karta', 'sprawozdanie') %}
+      <div class="field">
+        <label class="label" for="ocena">Ocena (skala 2–5)</label>
+        <select name="ocena" id="ocena">
+          <option value="">— brak —</option>
+          {% for o in ['5', '4.5', '4', '3.5', '3', '2'] %}<option value="{{ o }}">{{ o }}</option>{% endfor %}
+        </select>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="field">
+      <label class="label" for="komentarz">Komentarz / uzasadnienie</label>
+      <textarea name="komentarz" id="komentarz" rows="3" placeholder="Opcjonalnie — uwagi dla studenta lub uzasadnienie decyzji"></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-accent">Zapisz decyzję</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+{# --- Historia workflow -------------------------------------------------- #}
+{% if historia %}
+<div class="card">
+  <h2 class="card-title">Historia zmian statusu</h2>
+  <div class="timeline">
+    {% for h in historia %}
+    <div class="timeline-item">
+      <strong>{{ STATUS_PL.get(h.status_z, h.status_z) or 'utworzono' }} → {{ STATUS_PL.get(h.status_na, h.status_na) }}</strong>
+      {% if h.komentarz %}<div class="muted small mt-1">{{ h.komentarz }}</div>{% endif %}
+      <div class="timeline-meta">
+        {{ h.imie or 'system' }} {{ h.nazwisko or '' }} · {{ h.kiedy }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

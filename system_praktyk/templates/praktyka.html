@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Praktyka — {{ prakt.student_imie }} {{ prakt.student_nazwisko }}{% endblock %}
+{% block eyebrow %}Praktyka zawodowa{% endblock %}
+{% block heading %}{{ prakt.student_imie }} {{ prakt.student_nazwisko }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('main.dashboard') }}" class="btn btn-ghost">← Pulpit</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="card mb-3">
+  <div class="grid grid-2">
+    <div>
+      <p class="label">Numer albumu</p>
+      <p class="mono" style="margin: 4px 0 16px;">{{ prakt.nr_albumu or '—' }}</p>
+      <p class="label">Specjalność</p>
+      <p style="margin: 4px 0 16px;">{{ prakt.specjalnosc or '—' }}</p>
+      <p class="label">Rok akademicki</p>
+      <p style="margin: 4px 0 0;">{{ prakt.rok_akademicki or '—' }}</p>
+    </div>
+    <div>
+      <p class="label">Firma / zakład pracy</p>
+      <p style="margin: 4px 0 16px;"><strong>{{ prakt.firma_nazwa or '—' }}</strong></p>
+      {% if prakt.firma_adres %}<p class="muted small" style="margin: -12px 0 16px;">{{ prakt.firma_adres }}</p>{% endif %}
+
+      <p class="label">Termin praktyki</p>
+      <p class="mono" style="margin: 4px 0 16px;">{{ prakt.data_od or '—' }} → {{ prakt.data_do or '—' }} ({{ prakt.liczba_dni }} dni)</p>
+
+      <p class="label">Opiekunowie</p>
+      <p style="margin: 4px 0 0; font-size: 14px;">
+        Uczelniany: <strong>{{ prakt.ou_imie or '—' }} {{ prakt.ou_nazwisko or '' }}</strong><br>
+        Zakładowy: <strong>{{ prakt.oz_imie or '—' }} {{ prakt.oz_nazwisko or '' }}</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2 class="card-title">Dokumenty praktyki</h2>
+  <p class="card-sub">Kliknij dokument, aby przejść do formularza. Studenta tworzy dokument przez wypełnienie formularza — opiekunowie recenzują złożone dokumenty.</p>
+  <div class="grid grid-2">
+    {% for typ in KOLEJ %}
+      {% set d = dokumenty.get(typ) %}
+      {% set info = DOK[typ] %}
+      {% set status = d.status if d else 'Draft' %}
+      <a class="doc-tile" href="{{ url_for('dok.otworz_formularz', pid=prakt.id, typ=typ) }}">
+        <div class="doc-tile-ico">{{ info.ikona }}</div>
+        <div class="doc-tile-body">
+          <div class="doc-tile-name">{{ info.nazwa }}</div>
+          <div class="doc-tile-meta">Załącznik nr {{ info.zalacznik }} · autor: {{ info.autor.replace('_', ' ') }}</div>
+        </div>
+        <span class="badge badge--{{ status.split(' ')[0] }}">{{ STATUS_PL[status] }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

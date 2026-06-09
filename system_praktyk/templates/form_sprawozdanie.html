@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Edycja: Sprawozdanie{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('dok.podglad', dok_id=dok.id) }}" class="btn btn-ghost">← Powrót</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('dok.edytuj', dok_id=dok.id) }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">1. Charakterystyka miejsca odbywania praktyki</h2>
+    <p class="card-sub">Krótki opis instytucji, w której odbywała się praktyka zawodowa.</p>
+    <div class="field">
+      <textarea name="charakterystyka" rows="6"
+                placeholder="np. Firma X działa w branży… zatrudnia… profil działalności obejmuje…">{{ dane.charakterystyka or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">2. Opis i analiza wykonywanych prac</h2>
+    <p class="card-sub">Syntetyczny opis najważniejszych zadań wykonanych w trakcie praktyki.</p>
+    <div class="field">
+      <textarea name="opis_prac" rows="10"
+                placeholder="Najważniejsze zadania, projekty, w które byłaś/byłeś zaangażowana/y…">{{ dane.opis_prac or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">3. Wiedza i umiejętności uzyskane w trakcie praktyki (samoocena)</h2>
+    <p class="card-sub">Samoocena w zakresie nabytych kompetencji oraz osiągniętych efektów uczenia się.</p>
+    <div class="field">
+      <textarea name="samoocena" rows="10"
+                placeholder="Cytuj kolejne efekty uczenia się i wykaż prace, które prowadziły do ich osiągnięcia…">{{ dane.samoocena or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="akcja" value="zapisz" class="btn btn-secondary">Zapisz szkic</button>
+    <button type="submit" name="akcja" value="zloz" class="btn btn-accent">Zapisz i złóż do recenzji</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Edycja: Dziennik praktyki{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('dok.podglad', dok_id=dok.id) }}" class="btn btn-ghost">← Powrót</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('dok.edytuj', dok_id=dok.id) }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Dziennik praktyki — wpisy dzienne</h2>
+    <p class="card-sub">
+      Praktyka trwa 120 dni roboczych. Dla każdego dnia wpisz opis prac
+      oraz numery efektów uczenia się (01–13), do których prace prowadzą.
+      Numery rozdziel przecinkami, np. <code class="mono">02, 06, 10</code>.
+    </p>
+
+    <div class="dyn-table">
+      <div class="dyn-header dziennik-grid">
+        <div>Dzień</div><div>Data</div><div>Opis wykonanych prac</div><div>Nr efektów</div><div></div>
+      </div>
+      <div id="dziennik-rows">
+        {% set wpisy = dane.get('wpisy', []) %}
+        {% if wpisy %}
+          {% for w in wpisy %}
+          <div class="dyn-row dziennik-grid">
+            <input type="number" name="wpis_dzien[]" value="{{ w.dzien }}" min="1" max="120">
+            <input type="date" name="wpis_data[]" value="{{ w.data }}">
+            <textarea name="wpis_opis[]" placeholder="np. Konfiguracja środowiska Dockera, code review modułu logowania…">{{ w.opis }}</textarea>
+            <input type="text" name="wpis_efekty[]" value="{{ w.efekty }}" placeholder="np. 02, 06">
+            <button type="button" class="del-row" title="Usuń wpis">×</button>
+          </div>
+          {% endfor %}
+        {% else %}
+          {# pierwszy startowy wiersz #}
+          <div class="dyn-row dziennik-grid">
+            <input type="number" name="wpis_dzien[]" value="1" min="1" max="120">
+            <input type="date" name="wpis_data[]">
+            <textarea name="wpis_opis[]" placeholder="np. Szkolenie BHP, zapoznanie ze strukturą firmy"></textarea>
+            <input type="text" name="wpis_efekty[]" placeholder="np. 03, 04">
+            <button type="button" class="del-row" title="Usuń wpis">×</button>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <template id="tpl-dziennik-row">
+      <div class="dyn-row dziennik-grid">
+        <input type="number" name="wpis_dzien[]" min="1" max="120">
+        <input type="date" name="wpis_data[]">
+        <textarea name="wpis_opis[]" placeholder="Opis wykonanych prac"></textarea>
+        <input type="text" name="wpis_efekty[]" placeholder="np. 02, 06">
+        <button type="button" class="del-row" title="Usuń wpis">×</button>
+      </div>
+    </template>
+
+    <button type="button" class="add-row" data-template="tpl-dziennik-row" data-target="dziennik-rows">+ Dodaj dzień</button>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="akcja" value="zapisz" class="btn btn-secondary">Zapisz szkic</button>
+    <button type="submit" name="akcja" value="zloz" class="btn btn-accent">Zapisz i złóż do recenzji</button>
+  </div>
+</form>
+{% endblock %}

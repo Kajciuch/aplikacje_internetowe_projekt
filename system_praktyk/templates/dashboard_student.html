@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Pulpit studenta{% endblock %}
+{% block eyebrow %}Twoje praktyki{% endblock %}
+{% block heading %}Witaj, {{ current_user.imie }}.{% endblock %}
+
+{% block content %}
+{% if not praktyki %}
+  <div class="card">
+    <h2 class="card-title">Nie masz jeszcze przypisanej praktyki</h2>
+    <p>Skontaktuj się z dziekanatem, aby utworzyć kartę praktyki zawodowej.</p>
+  </div>
+{% else %}
+
+{% for wpis in praktyki %}
+{% set p = wpis.praktyka %}
+<div class="card">
+  <div class="flex-between mb-2" style="flex-wrap: wrap; gap: 12px;">
+    <div>
+      <h2 class="card-title" style="margin-bottom: 4px;">
+        Praktyka {% if p.rok_akademicki %}· {{ p.rok_akademicki }}{% endif %}
+      </h2>
+      <p class="muted small mono">
+        {{ p.firma_nazwa or 'firma nieprzypisana' }} ·
+        {{ p.data_od or '—' }} → {{ p.data_do or '—' }} ·
+        {{ p.liczba_dni }} dni
+      </p>
+    </div>
+    <a href="{{ url_for('dok.praktyka', pid=p.id) }}" class="btn btn-secondary btn-sm">
+      Otwórz praktykę →
+    </a>
+  </div>
+
+  <div class="grid grid-2">
+    {% for typ in KOLEJ %}
+      {% set d = wpis.stan.get(typ) %}
+      {% set info = DOK[typ] %}
+      {% set status = d.status if d else 'Draft' %}
+      <a class="doc-tile"
+         href="{{ url_for('dok.otworz_formularz', pid=p.id, typ=typ) }}">
+        <div class="doc-tile-ico">{{ info.ikona }}</div>
+        <div class="doc-tile-body">
+          <div class="doc-tile-name">{{ info.nazwa }}</div>
+          <div class="doc-tile-meta">Załącznik nr {{ info.zalacznik }} · {{ info.autor.replace('_', ' ') }}</div>
+        </div>
+        <span class="badge badge--{{ status.split(' ')[0] }}">{{ STATUS_PL[status] }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+
+{% endif %}
+{% endblock %}

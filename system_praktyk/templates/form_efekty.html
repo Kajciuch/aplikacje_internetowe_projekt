@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Edycja: Potwierdzenie efektów{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('dok.podglad', dok_id=dok.id) }}" class="btn btn-ghost">← Powrót</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('dok.edytuj', dok_id=dok.id) }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Wymiar praktyki</h2>
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="liczba_godzin">Liczba godzin praktyki</label>
+        <input type="number" name="liczba_godzin" id="liczba_godzin"
+               value="{{ dane.liczba_godzin or '960' }}" min="1" max="2000">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">13 efektów uczenia się</h2>
+    <p class="card-sub">Dla każdego efektu zaznacz, czy student go uzyskał (potwierdza opiekun zakładowy).</p>
+
+    {% for kod, opis in EFEKTY %}
+      {% set wynik = dane.get('potwierdzenia', {}).get(kod, '') %}
+      <div class="efekt-rzad">
+        <span class="efekt-kod">{{ kod }}</span>
+        <div class="efekt-opis">{{ opis }}</div>
+        <div class="efekt-wybor">
+          <label>
+            <input type="radio" name="efekt_{{ kod }}" value="uzyskał" {% if wynik == 'uzyskał' %}checked{% endif %}>
+            <span>✓ uzyskał</span>
+          </label>
+          <label>
+            <input type="radio" name="efekt_{{ kod }}" value="nie uzyskał" {% if wynik == 'nie uzyskał' %}checked{% endif %}>
+            <span>✗ nie uzyskał</span>
+          </label>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Opinia opiekuna uczelnianego</h2>
+    <div class="field">
+      <textarea name="opinia_uczelniana" rows="5"
+                placeholder="Opinia o realizacji praktyki, postępach studenta…">{{ dane.opinia_uczelniana or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="akcja" value="zapisz" class="btn btn-secondary">Zapisz szkic</button>
+    <button type="submit" name="akcja" value="zloz" class="btn btn-accent">Zapisz i złóż do recenzji</button>
+  </div>
+</form>
+{% endblock %}

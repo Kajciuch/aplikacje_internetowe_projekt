@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Edycja: Karta praktyki{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('dok.podglad', dok_id=dok.id) }}" class="btn btn-ghost">← Powrót</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('dok.edytuj', dok_id=dok.id) }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Ocena przebiegu praktyki</h2>
+    <p class="card-sub">Karta praktyki jest podsumowaniem — opiekunowie wystawiają oceny w trakcie recenzji dokumentu.</p>
+
+    <div class="field">
+      <label class="label" for="ocena_opisowa">Ocena opisowa</label>
+      <textarea name="ocena_opisowa" id="ocena_opisowa" rows="6"
+                placeholder="Opis przebiegu praktyki, postępów studenta, mocnych i słabych stron…">{{ dane.ocena_opisowa or '' }}</textarea>
+    </div>
+
+    <div class="field">
+      <label class="label" for="uwagi">Dodatkowe uwagi</label>
+      <textarea name="uwagi" id="uwagi" rows="3">{{ dane.uwagi or '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="akcja" value="zapisz" class="btn btn-secondary">Zapisz szkic</button>
+    <button type="submit" name="akcja" value="zloz" class="btn btn-accent">Zapisz i złóż do recenzji</button>
+  </div>
+</form>
+{% endblock %}

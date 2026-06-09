@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Edycja: Ankieta{% endblock %}
+{% block eyebrow %}Załącznik nr {{ info.zalacznik }}{% endblock %}
+{% block heading %}{{ info.ikona }} {{ info.nazwa }}{% endblock %}
+
+{% block topbar_action %}
+<a href="{{ url_for('dok.podglad', dok_id=dok.id) }}" class="btn btn-ghost">← Powrót</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('dok.edytuj', dok_id=dok.id) }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="card">
+    <h2 class="card-title">Ankieta oceniająca przebieg praktyki</h2>
+    <p class="card-sub">
+      Ankieta jest <strong>anonimowa</strong> — wyniki nie są powiązane z danymi studenta.
+      Zaznacz odpowiedź przy każdym ze stwierdzeń.
+    </p>
+
+    {% for pyt in PYTANIA %}
+      {% set num = loop.index %}
+      {% set wybor = dane.get('odpowiedzi', {}).get(num|string, '') %}
+      <div class="likert-row">
+        <span class="likert-num">{{ num }}</span>
+        <div>
+          <div class="likert-q">{{ pyt }}</div>
+          <div class="likert-opts">
+            {% for s in SKALA %}
+              <label>
+                <input type="radio" name="pyt_{{ num }}" value="{{ s }}" {% if wybor == s %}checked{% endif %}>
+                {{ s }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Dodatkowe uwagi</h2>
+    <textarea name="uwagi" rows="4">{{ dane.uwagi or '' }}</textarea>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Metryczka</h2>
+    <div class="field-row">
+      <div class="field">
+        <label class="label" for="m_rok">Rok akademicki</label>
+        <input type="text" name="m_rok" id="m_rok" value="{{ dane.get('metryczka', {}).get('rok', '') }}" placeholder="np. 2024/2025">
+      </div>
+      <div class="field">
+        <label class="label" for="m_forma">Forma studiów</label>
+        <select name="m_forma" id="m_forma">
+          {% set fw = dane.get('metryczka', {}).get('forma', 'stacjonarne') %}
+          <option value="stacjonarne" {% if fw == 'stacjonarne' %}selected{% endif %}>stacjonarne</option>
+          <option value="niestacjonarne" {% if fw == 'niestacjonarne' %}selected{% endif %}>niestacjonarne</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="m_semestr">Semestr</label>
+        <input type="text" name="m_semestr" id="m_semestr" value="{{ dane.get('metryczka', {}).get('semestr', '') }}">
+      </div>
+      <div class="field">
+        <label class="label" for="m_godziny">Liczba godzin praktyki</label>
+        <input type="number" name="m_godziny" id="m_godziny" value="{{ dane.get('metryczka', {}).get('godziny', '') }}">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="akcja" value="zapisz" class="btn btn-secondary">Zapisz szkic</button>
+    <button type="submit" name="akcja" value="zloz" class="btn btn-accent">Zapisz i złóż do recenzji</button>
+  </div>
+</form>
+{% endblock %}

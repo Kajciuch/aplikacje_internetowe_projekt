@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "student": {"imie": "Anna", "nazwisko": "Kowalska", "nr_albumu": "120345"},
+  "specjalnosc": "Inżynieria oprogramowania",
+  "rok_akademicki": "2024/2025",
+  "data_od": "2025-07-01",
+  "data_do": "2025-12-15",
+  "liczba_dni": 120,
+  "porozumienie_nr": "P/2025/042",
+  "firma": {"nazwa": "ACME Software Sp. z o.o.", "adres": "ul. Browarna 12, 82-300 Elbląg"},
+  "opiekun_uczelniany": "dr Jan Nowak",
+  "opiekun_zakladowy": "mgr Piotr Zieliński"
+}

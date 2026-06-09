@@ -1,0 +1,12 @@
+{
+  "praktyka_id": 1,
+  "student": "Anna Kowalska",
+  "nr_albumu": "120345",
+  "wpisy": [
+    {"dzien": 1, "data": "2025-07-01", "opis": "Szkolenie BHP, zapoznanie ze strukturą firmy.", "efekty": "03, 04"},
+    {"dzien": 2, "data": "2025-07-02", "opis": "Konfiguracja środowiska deweloperskiego (Docker, VS Code).", "efekty": "02, 04"},
+    {"dzien": 3, "data": "2025-07-03", "opis": "Wprowadzenie do projektu, code review modułów.", "efekty": "07, 10"},
+    {"dzien": 4, "data": "2025-07-04", "opis": "Implementacja endpointu REST dla modułu użytkowników.", "efekty": "01, 02, 09"},
+    {"dzien": 5, "data": "2025-07-07", "opis": "Pisanie testów jednostkowych w pytest.", "efekty": "07, 09"}
+  ]
+}

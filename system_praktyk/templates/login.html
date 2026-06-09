@@ -1,0 +1,68 @@
+{# Logowanie — własny układ poza zwykłym sidebarem. #}
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logowanie · Praktyki.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="login-shell">
+  <section class="login-side">
+    <div>
+      <a href="{{ url_for('auth.login') }}" class="wordmark">Praktyki<span class="dot">.</span></a>
+      <p class="meta" style="margin-top: 6px;">ANS · Instytut Informatyki Stosowanej</p>
+    </div>
+    <div>
+      <p>System obsługi praktyk zawodowych dla studentów kierunku informatyka. Wypełnij dziennik, prześlij sprawozdanie, pobierz dokumenty w formie PDF — wszystko w jednym miejscu.</p>
+    </div>
+    <p class="meta">120 dni roboczych · 13 efektów uczenia się · 6 załączników</p>
+  </section>
+
+  <section class="login-card">
+    <form method="post" action="{{ url_for('auth.login') }}" data-validate>
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <h1>Zaloguj się</h1>
+      <p class="sub">Użyj e-maila uczelnianego lub konta Microsoft.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flashes">
+            {% for kat, tekst in messages %}
+              <div class="flash flash--{{ kat }}">{{ tekst }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <div class="field">
+        <label class="label" for="email">E-mail</label>
+        <input type="email" name="email" id="email" required autocomplete="email" autofocus>
+      </div>
+
+      <div class="field">
+        <label class="label" for="haslo">Hasło</label>
+        <input type="password" name="haslo" id="haslo" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center;">Zaloguj się</button>
+
+      {% if microsoft_login_enabled %}
+      <div class="divider">albo</div>
+      <a href="{{ url_for('auth.microsoft_login') }}" class="btn btn-microsoft">
+        <span style="font-family: 'IBM Plex Mono', monospace;">M</span> Zaloguj przez Microsoft
+      </a>
+      {% endif %}
+
+      <p class="small muted mt-3" style="text-align: center;">
+        Nie pamiętasz hasła? Skontaktuj się z dziekanatem.
+      </p>
+    </form>
+  </section>
+</div>
+</body>
+</html>

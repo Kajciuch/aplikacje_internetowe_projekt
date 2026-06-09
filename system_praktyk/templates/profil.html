@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+{% block eyebrow %}Twoje konto{% endblock %}
+{% block heading %}Profil użytkownika{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="grid grid-2">
+    <div>
+      <p class="label">Imię i nazwisko</p>
+      <p style="font-size: 18px; margin: 4px 0 16px;"><strong>{{ u.pelne_imie }}</strong></p>
+
+      <p class="label">E-mail</p>
+      <p class="mono" style="margin: 4px 0 16px;">{{ u.email }}</p>
+
+      <p class="label">Rola w systemie</p>
+      <p style="margin: 4px 0 16px;">{{ u.rola_pl }}</p>
+    </div>
+    <div>
+      {% if u.nr_albumu %}
+        <p class="label">Nr albumu</p>
+        <p class="mono" style="margin: 4px 0 16px;">{{ u.nr_albumu }}</p>
+      {% endif %}
+      <p class="label">Identyfikator</p>
+      <p class="mono small" style="margin: 4px 0 16px;">user_{{ u.id }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2 class="card-title">Pomoc</h2>
+  <p class="muted small">Aby zmienić hasło lub zaktualizować dane, skontaktuj się z dziekanatem (administratorem systemu).</p>
+</div>
+{% endblock %}
