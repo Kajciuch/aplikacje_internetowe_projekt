@@ -21,14 +21,13 @@
         <p class="label">Nr albumu</p>
         <p class="mono" style="margin: 4px 0 16px;">{{ u.nr_albumu }}</p>
       {% endif %}
-      <p class="label">Identyfikator</p>
-      <p class="mono small" style="margin: 4px 0 16px;">user_{{ u.id }}</p>
+      <p class="label">Konto utworzono</p>
+      <p class="small muted" style="margin: 4px 0 0;">
+        W razie pytań skontaktuj się z dziekanatem
+        (<a href="{{ url_for('main.kontakt') }}">dane kontaktowe</a>).
+      </p>
     </div>
   </div>
 </div>
 
-<div class="card">
-  <h2 class="card-title">Pomoc</h2>
-  <p class="muted small">Aby zmienić hasło lub zaktualizować dane, skontaktuj się z dziekanatem (administratorem systemu).</p>
-</div>
 {% endblock %}

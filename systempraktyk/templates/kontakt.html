@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Kontakt{% endblock %}
+{% block eyebrow %}Informacje{% endblock %}
+{% block heading %}Kontakt{% endblock %}
+
+{% block content %}
+
+<div class="contact-grid">
+
+  <div class="contact-block">
+    <h3>Dziekanat Instytutu Informatyki Stosowanej</h3>
+
+    <div class="contact-line">
+      <span class="label">Adres</span>
+      <span>ul. Wojska Polskiego 1<br>82-300 Elbląg</span>
+    </div>
+
+    <div class="contact-line">
+      <span class="label">E-mail</span>
+      <a href="mailto:iis@ans-elblag.pl">iis@ans-elblag.pl</a>
+    </div>
+
+    <div class="contact-line">
+      <span class="label">Telefon</span>
+      <span>
+        <a href="tel:+48556290750">55 629 07 50</a><br>
+        <a href="tel:+48556290751">55 629 07 51</a><br>
+        <a href="tel:+48556290752">+48 55 629 07 52</a>
+      </span>
+    </div>
+
+    <div class="contact-line" style="margin-top: 16px; padding-top: 16px;
+                                    border-top: 1px solid var(--line-soft); align-items: flex-start;">
+      <span class="label">Godziny<br>przyjęć</span>
+      <span>
+        <strong>poniedziałek–piątek:</strong> 9:00 – 15:00<br>
+        <strong>soboty*:</strong> 8:00 – 12:00<br>
+        <em class="muted small">*w dniach wyznaczonych zajęć</em>
+      </span>
+    </div>
+  </div>
+
+  <div class="contact-block">
+    <h3>Administrator systemu</h3>
+    <p style="font-size: 14px; color: var(--ink-soft); margin: 0 0 16px;">
+      W sprawach związanych z działaniem systemu, dostępem do konta lub
+      zgłoszeniem problemów technicznych — prosimy o kontakt z dziekanatem
+      (dane obok).
+    </p>
+
+    <h3 style="margin-top: 24px;">Pomoc</h3>
+    <p style="font-size: 14px; color: var(--ink-soft); margin: 0 0 12px;">
+      Dokumenty pomocnicze dostępne w menu bocznym:
+    </p>
+    <ul style="font-size: 14px; color: var(--ink-soft); margin: 0; padding-left: 22px;">
+      <li><a href="{{ url_for('main.regulamin') }}">Regulamin praktyk zawodowych</a> — pełne zasady</li>
+      <li><a href="{{ url_for('main.zasady') }}">Zasady odbywania praktyk</a> — kierunkowe wytyczne</li>
+    </ul>
+  </div>
+
+</div>
+
+{% endblock %}

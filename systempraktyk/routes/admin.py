@@ -48,17 +48,16 @@ def nowy_uzytkownik():
         haslo = request.form.get("haslo", "").strip()
 
         bledy = []
-        if not models.poprawny_email(email):
-            bledy.append("Nieprawidłowy adres e-mail.")
+        blad_email = models.waliduj_email_dla_roli(email, rola) if rola in meta.ROLE_NAZWY else "Nieprawidłowa rola."
+        if blad_email:
+            bledy.append(blad_email)
         if not imie or not nazwisko:
             bledy.append("Imię i nazwisko są wymagane.")
-        if rola not in meta.ROLE_NAZWY:
-            bledy.append("Nieprawidłowa rola.")
         if rola == "student" and not nr_albumu:
             bledy.append("Numer albumu jest wymagany dla studenta.")
         if not haslo or len(haslo) < 6:
             bledy.append("Hasło musi mieć co najmniej 6 znaków.")
-        if models.get_user_by_email(email):
+        if not blad_email and models.get_user_by_email(email):
             bledy.append(f"Użytkownik z adresem {email} już istnieje.")
 
         if bledy:

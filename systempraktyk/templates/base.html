@@ -16,30 +16,51 @@
 
   {# ---------- Grzbiet (nawigacja boczna) ---------- #}
   <aside class="spine">
-    <a class="wordmark" href="{{ url_for('main.dashboard') if current_user else url_for('auth.login') }}">
-      Praktyki<span class="dot">.</span>
+    <a class="brand" href="{{ url_for('main.index') if current_user else url_for('auth.login') }}">
+      <img src="{{ url_for('static', filename='img/logo-ans.png') }}" alt="ANS Elbląg">
+      <span class="brand-text">
+        Akademia Nauk Stosowanych
+        <small>w Elblągu · Praktyki zawodowe</small>
+      </span>
     </a>
-    <p class="spine-sub">Instytut Informatyki Stosowanej</p>
 
     {% if current_user %}
     <nav class="nav">
+      <a href="{{ url_for('main.index') }}"
+         class="{{ 'active' if request.endpoint == 'main.index' }}">
+        <span class="nav-ico">▦</span> Strona główna
+      </a>
       <a href="{{ url_for('main.dashboard') }}"
          class="{{ 'active' if request.endpoint == 'main.dashboard' }}">
-        <span class="nav-ico">▦</span> Pulpit
+        <span class="nav-ico">◰</span> Praktyki
       </a>
       <a href="{{ url_for('main.profil') }}"
          class="{{ 'active' if request.endpoint == 'main.profil' }}">
         <span class="nav-ico">◉</span> Profil
       </a>
 
+      <div class="nav-section">Informacje</div>
+      <a href="{{ url_for('main.kontakt') }}"
+         class="{{ 'active' if request.endpoint == 'main.kontakt' }}">
+        <span class="nav-ico">✉</span> Kontakt
+      </a>
+      <a href="{{ url_for('main.regulamin') }}"
+         class="{{ 'active' if request.endpoint == 'main.regulamin' }}">
+        <span class="nav-ico">§</span> Regulamin
+      </a>
+      <a href="{{ url_for('main.zasady') }}"
+         class="{{ 'active' if request.endpoint == 'main.zasady' }}">
+        <span class="nav-ico">≡</span> Zasady praktyk
+      </a>
+
       {% if current_user.rola == 'dziekanat' %}
         <div class="nav-section">Administracja</div>
         <a href="{{ url_for('admin.lista_uzytkownikow') }}"
-           class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.lista_uzy') or request.endpoint == 'admin.nowy_uzytkownik' }}">
+           class="{{ 'active' if request.endpoint and (request.endpoint.startswith('admin.lista_uzy') or request.endpoint == 'admin.nowy_uzytkownik') }}">
           <span class="nav-ico">◌</span> Użytkownicy
         </a>
         <a href="{{ url_for('admin.lista_firm') }}"
-           class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.list_firm') or request.endpoint == 'admin.nowa_firma' or request.endpoint == 'admin.lista_firm' }}">
+           class="{{ 'active' if request.endpoint in ('admin.lista_firm', 'admin.nowa_firma') }}">
           <span class="nav-ico">◆</span> Firmy
         </a>
         <a href="{{ url_for('admin.nowa_praktyka') }}"

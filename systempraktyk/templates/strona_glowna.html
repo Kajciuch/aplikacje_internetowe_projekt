@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Strona główna{% endblock %}
+{% block eyebrow %}Witaj w systemie{% endblock %}
+{% block heading %}Dzień dobry, {{ u.imie }}.{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <h2>System Obsługi Praktyk Zawodowych</h2>
+  <p>
+    Aplikacja Instytutu Informatyki Stosowanej im. Krzysztofa Brzeskiego, służąca do
+    obsługi <strong>całej dokumentacji praktyk zawodowych</strong> — od programu praktyki,
+    przez dziennik prowadzony dzień po dniu, aż po sprawozdanie końcowe i anonimową ankietę.
+  </p>
+  <p>
+    Zamiast wypełniać dokumenty w Wordzie i wysyłać e-mailem, możesz tutaj zrobić wszystko
+    w przeglądarce — system prowadzi przez kolejne kroki, pilnuje terminów i kompletności,
+    a gotowe formularze pobierzesz w postaci pliku PDF zgodnego z załącznikami uczelni.
+  </p>
+  <p class="hero-meta">
+    Kierunek Informatyka · 7. semestr · 120 dni roboczych · 13 efektów uczenia się
+  </p>
+</section>
+
+<h3 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px;
+           color: var(--ink-soft); margin: 28px 0 14px; letter-spacing: -.01em;">
+  Co możesz zrobić
+</h3>
+
+<div class="tile-grid">
+
+  {% if u.rola == 'student' %}
+  <a href="{{ url_for('main.dashboard') }}" class="tile">
+    <div class="tile-ico">◰</div>
+    <div class="tile-title">Moje praktyki</div>
+    <div class="tile-desc">Pulpit z Twoją praktyką i sześcioma formularzami do wypełnienia.</div>
+  </a>
+  <a href="{{ url_for('main.regulamin') }}" class="tile">
+    <div class="tile-ico">§</div>
+    <div class="tile-title">Regulamin praktyk</div>
+    <div class="tile-desc">Pełna treść regulaminu praktyk zawodowych IIS.</div>
+  </a>
+  <a href="{{ url_for('main.kontakt') }}" class="tile">
+    <div class="tile-ico">✉</div>
+    <div class="tile-title">Kontakt z dziekanatem</div>
+    <div class="tile-desc">Adres, telefon i godziny przyjęć interesantów.</div>
+  </a>
+
+  {% elif u.rola in ('opiekun_uczelniany', 'opiekun_zakladowy') %}
+  <a href="{{ url_for('main.dashboard') }}" class="tile">
+    <div class="tile-ico">◰</div>
+    <div class="tile-title">Praktyki pod opieką</div>
+    <div class="tile-desc">Lista przypisanych studentów oraz dokumenty oczekujące na Twoją recenzję.</div>
+  </a>
+  <a href="{{ url_for('main.regulamin') }}" class="tile">
+    <div class="tile-ico">§</div>
+    <div class="tile-title">Regulamin praktyk</div>
+    <div class="tile-desc">Obowiązki opiekuna, zasady dokumentowania i zaliczania.</div>
+  </a>
+  <a href="{{ url_for('main.zasady') }}" class="tile">
+    <div class="tile-ico">≡</div>
+    <div class="tile-title">Zasady odbywania praktyk</div>
+    <div class="tile-desc">Szczegóły organizacji i przebiegu praktyk zawodowych.</div>
+  </a>
+
+  {% else %}{# dziekanat #}
+  <a href="{{ url_for('main.dashboard') }}" class="tile">
+    <div class="tile-ico">◰</div>
+    <div class="tile-title">Wszystkie praktyki</div>
+    <div class="tile-desc">Pełny przegląd praktyk, statystyki i lista użytkowników.</div>
+  </a>
+  <a href="{{ url_for('admin.lista_uzytkownikow') }}" class="tile">
+    <div class="tile-ico">◌</div>
+    <div class="tile-title">Zarządzaj kontami</div>
+    <div class="tile-desc">Tworzenie kont studentów, opiekunów i logowanie się jako inny użytkownik.</div>
+  </a>
+  <a href="{{ url_for('admin.nowa_praktyka') }}" class="tile">
+    <div class="tile-ico">+</div>
+    <div class="tile-title">Nowa praktyka</div>
+    <div class="tile-desc">Przydziel studentowi firmę i opiekunów. Wybierz specjalność.</div>
+  </a>
+  {% endif %}
+
+</div>
+
+{% endblock %}

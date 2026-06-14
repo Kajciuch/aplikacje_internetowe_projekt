@@ -1,0 +1,28 @@
+flowchart TD
+    Start([Żądanie HTTP]) --> Login{Zalogowany?}
+    Login -- nie --> Logowanie[/Przekieruj na /login/]
+    Login -- tak --> Trasa{Trasa?}
+
+    Trasa -- /dashboard --> Dash[Pulpit zależny od roli]
+    Dash --> Rola{Jaka rola?}
+    Rola -- student --> DStud[dashboard_student.html]
+    Rola -- opiekun --> DOp[dashboard_opiekun.html]
+    Rola -- dziekanat --> DDziek[dashboard_dziekanat.html]
+
+    Trasa -- /dokument/:id --> Dok{Ma dostęp?}
+    Dok -- nie --> E403[/HTTP 403/]
+    Dok -- tak --> Akcja{Akcja?}
+
+    Akcja -- podgląd --> Widok[Renderuj dokument]
+    Akcja -- edycja --> Edyt{moze_edytowac?}
+    Edyt -- nie --> E403
+    Edyt -- tak --> Form[Formularz edycji]
+
+    Akcja -- recenzja --> Rec{moze_recenzowac?}
+    Rec -- nie --> E403
+    Rec -- tak --> RecForm[Formularz recenzji]
+
+    Trasa -- /api/* --> API{Token sesji?}
+    API -- nie --> E401[/HTTP 401/]
+    API -- tak --> APIRola{Wymaga roli?}
+    APIRola -- tak/nie --> APIOdp[JSON]

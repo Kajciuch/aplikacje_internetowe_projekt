@@ -1,9 +1,19 @@
 # Diagramy systemu — System Obsługi Praktyk
 
 > Etap 5 wymagań projektu: diagram sekwencji, diagram stanów, flowchart, ERD.
-> Wszystkie diagramy w formacie Mermaid — GitHub renderuje je automatycznie.
+> Wszystkie diagramy mają trzy reprezentacje:
+> 1. **Kod źródłowy w Mermaid** poniżej — GitHub renderuje automatycznie,
+> 2. **Wyeksportowane obrazki PNG** w `docs/diagrams/*.png`,
+> 3. **Pliki źródłowe** `.mmd` w `docs/diagrams/` (do wklejenia na <https://mermaid.live>).
+>
+> Skrypt `docs/diagrams/render.py` regeneruje obrazki PNG za pomocą `graphviz`
+> i `matplotlib` (uruchom: `python docs/diagrams/render.py`).
 
 ## 1. Diagram sekwencji — proces weryfikacji dokumentu
+
+![Diagram sekwencji](diagrams/01-sekwencja.png)
+
+### Kod źródłowy (Mermaid)
 
 ```mermaid
 sequenceDiagram
@@ -43,6 +53,10 @@ sequenceDiagram
 
 ## 2. Diagram stanów — workflow dokumentu
 
+![Diagram stanów](diagrams/02-stany.png)
+
+### Kod źródłowy (Mermaid)
+
 ```mermaid
 stateDiagram-v2
     [*] --> Draft : utworzenie
@@ -68,6 +82,10 @@ stateDiagram-v2
 ```
 
 ## 3. Flowchart — logika uprawnień
+
+![Flowchart](diagrams/03-flowchart.png)
+
+### Kod źródłowy (Mermaid)
 
 ```mermaid
 flowchart TD
@@ -101,6 +119,10 @@ flowchart TD
 ```
 
 ## 4. Diagram ERD — model danych
+
+![ERD](diagrams/04-erd.png)
+
+### Kod źródłowy (Mermaid)
 
 ```mermaid
 erDiagram
@@ -182,9 +204,19 @@ erDiagram
 
 ## Eksport diagramów
 
-Każdy z powyższych diagramów można wyeksportować do PNG/SVG za pomocą:
-- **Mermaid Live Editor** — https://mermaid.live (wklej kod → Export PNG/SVG)
-- **VS Code** — rozszerzenie *Markdown Preview Mermaid Support*
-- **CLI** — `mmdc -i diagram.mmd -o diagram.png`
+Diagramy zostały już wyrenderowane do plików PNG w folderze `docs/diagrams/`.
+Aby je zregenerować po edycji:
 
-Pliki źródłowe (do wklejenia w `mermaid.live`) — patrz katalog `docs/diagrams/`.
+```bash
+cd docs/diagrams
+python render.py
+```
+
+Skrypt używa bibliotek `graphviz` (już zainstalowanej z `requirements.txt`
+przez zależność reportlab — `pip install graphviz` jeśli trzeba osobno)
+i `matplotlib`.
+
+Diagramy można też wyeksportować z kodu Mermaid za pomocą:
+- **Mermaid Live Editor** — https://mermaid.live (wklej zawartość pliku `.mmd` → Export PNG/SVG),
+- **VS Code** — rozszerzenie *Markdown Preview Mermaid Support*,
+- **CLI** — `mmdc -i diagram.mmd -o diagram.png` (wymaga Chromium).

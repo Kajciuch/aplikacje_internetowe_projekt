@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Logowanie · Praktyki.</title>
+  <title>Logowanie · System Obsługi Praktyk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,11 +14,17 @@
 <div class="login-shell">
   <section class="login-side">
     <div>
-      <a href="{{ url_for('auth.login') }}" class="wordmark">Praktyki<span class="dot">.</span></a>
-      <p class="meta" style="margin-top: 6px;">ANS · Instytut Informatyki Stosowanej</p>
+      <img src="{{ url_for('static', filename='img/logo-ans.png') }}"
+           alt="Akademia Nauk Stosowanych w Elblągu"
+           style="width: 110px; background: white; border-radius: 12px; padding: 12px; display: block;">
+      <p class="meta" style="margin-top: 18px;">Akademia Nauk Stosowanych w Elblągu</p>
+      <p style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600;
+                color: var(--spine-ink); margin: 4px 0 0; letter-spacing: -.02em;">
+        System Obsługi Praktyk Zawodowych
+      </p>
     </div>
     <div>
-      <p>System obsługi praktyk zawodowych dla studentów kierunku informatyka. Wypełnij dziennik, prześlij sprawozdanie, pobierz dokumenty w formie PDF — wszystko w jednym miejscu.</p>
+      <p>Aplikacja dla studentów, opiekunów uczelnianych i zakładowych oraz dziekanatu — wspiera obsługę dokumentacji praktyk zawodowych Instytutu Informatyki Stosowanej.</p>
     </div>
     <p class="meta">120 dni roboczych · 13 efektów uczenia się · 6 załączników</p>
   </section>
@@ -27,7 +33,7 @@
     <form method="post" action="{{ url_for('auth.login') }}" data-validate>
       <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <h1>Zaloguj się</h1>
-      <p class="sub">Użyj e-maila uczelnianego lub konta Microsoft.</p>
+      <p class="sub">Użyj adresu uczelnianego lub konta Microsoft.</p>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -51,15 +57,23 @@
 
       <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center;">Zaloguj się</button>
 
-      {% if microsoft_login_enabled %}
       <div class="divider">albo</div>
+
       <a href="{{ url_for('auth.microsoft_login') }}" class="btn btn-microsoft">
-        <span style="font-family: 'IBM Plex Mono', monospace;">M</span> Zaloguj przez Microsoft
+        <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600;">M</span>
+        Zaloguj się przez Microsoft
       </a>
+      {% if not microsoft_login_enabled %}
+        <p class="small muted mt-1" style="text-align: center;">
+          (logowanie Microsoft wymaga konfiguracji <code>.env</code>)
+        </p>
       {% endif %}
 
-      <p class="small muted mt-3" style="text-align: center;">
-        Nie pamiętasz hasła? Skontaktuj się z dziekanatem.
+      <p class="sub mt-3" style="text-align: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line);">
+        Jesteś opiekunem zakładowym? <a href="{{ url_for('auth.register') }}"><strong>Utwórz konto</strong></a>
+      </p>
+      <p class="small muted" style="text-align: center;">
+        Konta studenckie i pracownicze tworzy dziekanat.
       </p>
     </form>
   </section>

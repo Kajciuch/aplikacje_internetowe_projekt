@@ -259,6 +259,47 @@ curl -b cookies.txt "http://localhost:5000/api/documents?status=Submitted" | jq
 
 ---
 
+## Diagramy systemu
+
+Wszystkie diagramy są dostępne w trzech postaciach: jako kod źródłowy
+(Mermaid w `docs/02-diagramy.md` — GitHub renderuje automatycznie), jako
+gotowe obrazki PNG poniżej, oraz jako pliki SVG/PNG w `docs/diagrams/`.
+
+### 1. Diagram sekwencji — proces weryfikacji dokumentu
+
+![Diagram sekwencji](docs/diagrams/01-sekwencja.png)
+
+Pokazuje pełną interakcję między studentem, aplikacją, bazą danych, opiekunem
+i generatorem PDF — od edycji dokumentu, przez złożenie do recenzji, aż po
+pobranie zatwierdzonego PDF.
+
+### 2. Diagram stanów — workflow dokumentu
+
+![Diagram stanów](docs/diagrams/02-stany.png)
+
+Pięć stanów dokumentu (`Draft → Submitted → Under Review → Approved/Rejected`)
+z dozwolonymi przejściami. Stan `Approved` jest końcowy; z `Rejected` autor
+może wrócić do `Draft` i poprawić.
+
+### 3. Diagram przepływu (flowchart) — logika uprawnień
+
+![Flowchart uprawnień](docs/diagrams/03-flowchart.png)
+
+Co dzieje się z każdym żądaniem HTTP: sprawdzenie zalogowania, routing
+do odpowiedniego widoku zależnie od trasy i roli, kontrola dostępu do
+dokumentów i API.
+
+### 4. Diagram ERD — model danych
+
+![Diagram ERD](docs/diagrams/04-erd.png)
+
+Sześć tabel bazy danych z kluczami głównymi (PK), obcymi (FK) i unikalnymi (UK)
+oraz relacje między nimi. Tabela `praktyki` łączy się trzykrotnie z `users`
+(student + dwóch opiekunów); tabela `workflow_log` przechowuje historię zmian
+statusu każdego dokumentu.
+
+---
+
 ## Workflow dokumentów
 
 ```
@@ -270,7 +311,7 @@ Draft → Submitted → Under Review → Approved
 Pełna historia każdej zmiany statusu zapisywana jest w tabeli `workflow_log`
 i wyświetlana jako oś czasu w widoku dokumentu.
 
-Diagramy: [`docs/02-diagramy.md`](docs/02-diagramy.md).
+Zobacz diagram stanów wyżej oraz [`docs/02-diagramy.md`](docs/02-diagramy.md) z dodatkowym kontekstem.
 
 ---
 

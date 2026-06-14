@@ -1,0 +1,75 @@
+erDiagram
+    USERS ||--o{ PRAKTYKI : "student_id"
+    USERS ||--o{ PRAKTYKI : "opiekun_uczelniany_id"
+    USERS ||--o{ PRAKTYKI : "opiekun_zakladowy_id"
+    FIRMY ||--o{ PRAKTYKI : "firma_id"
+    PRAKTYKI ||--o{ DOKUMENTY : "praktyka_id"
+    DOKUMENTY ||--o{ WORKFLOW_LOG : "dokument_id"
+    USERS ||--o{ DOKUMENTY : "autor_id"
+    USERS ||--o{ WORKFLOW_LOG : "uzytkownik_id"
+
+    USERS {
+        int id PK
+        text email UK
+        text haslo_hash
+        text imie
+        text nazwisko
+        text rola "CHECK 4 wartości"
+        text nr_albumu
+        text oauth_provider
+        text oauth_sub
+        int pierwszy_login
+        text utworzono
+    }
+
+    FIRMY {
+        int id PK
+        text nazwa
+        text adres
+        text nip
+    }
+
+    EFEKTY {
+        int id PK
+        text kod UK "01..13"
+        text opis
+    }
+
+    PRAKTYKI {
+        int id PK
+        int student_id FK
+        int opiekun_uczelniany_id FK
+        int opiekun_zakladowy_id FK
+        int firma_id FK
+        text specjalnosc
+        text rok_akademicki
+        text data_od
+        text data_do
+        int liczba_dni "default 120"
+        text porozumienie_nr
+        text status
+    }
+
+    DOKUMENTY {
+        int id PK
+        int praktyka_id FK
+        text typ "6 wartości"
+        text status "5 wartości"
+        text dane_json "JSON"
+        int autor_id FK
+        int recenzent_id FK
+        text ocena
+        text komentarz_recenzenta
+        text utworzono
+        text zaktualizowano
+    }
+
+    WORKFLOW_LOG {
+        int id PK
+        int dokument_id FK
+        text status_z
+        text status_na
+        int uzytkownik_id FK
+        text komentarz
+        text kiedy
+    }

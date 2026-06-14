@@ -1,0 +1,87 @@
+{# Rejestracja — tylko dla opiekunów zakładowych. #}
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rejestracja · System Obsługi Praktyk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="login-shell">
+  <section class="login-side">
+    <div>
+      <img src="{{ url_for('static', filename='img/logo-ans.png') }}"
+           alt="ANS Elbląg"
+           style="width: 110px; background: white; border-radius: 12px; padding: 12px; display: block;">
+      <p class="meta" style="margin-top: 18px;">Akademia Nauk Stosowanych w Elblągu</p>
+      <p style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600;
+                color: var(--spine-ink); margin: 4px 0 0; letter-spacing: -.02em;">
+        Rejestracja opiekuna zakładowego
+      </p>
+    </div>
+    <div>
+      <p>Konto dla opiekuna z firmy / zakładu pracy, w którym student odbywa praktykę. Pozwoli Państwu recenzować dziennik praktyki i potwierdzać efekty uczenia się.</p>
+      <p style="margin-top: 12px;"><strong style="color: var(--spine-ink);">Konta studenckie i pracownicze ANS</strong> — zakłada wyłącznie dziekanat.</p>
+    </div>
+    <p class="meta">Bezpieczne logowanie · CSRF · pbkdf2-sha256</p>
+  </section>
+
+  <section class="login-card">
+    <form method="post" action="{{ url_for('auth.register') }}" data-validate>
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <h1>Utwórz konto</h1>
+      <p class="sub">Wypełnij dane — po rejestracji zostaniesz automatycznie zalogowana/y.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flashes">
+            {% for kat, tekst in messages %}
+              <div class="flash flash--{{ kat }}">{{ tekst }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <div class="field-row">
+        <div class="field">
+          <label class="label" for="imie">Imię</label>
+          <input type="text" name="imie" id="imie" required autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label class="label" for="nazwisko">Nazwisko</label>
+          <input type="text" name="nazwisko" id="nazwisko" required autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="email">E-mail służbowy</label>
+        <input type="email" name="email" id="email" required autocomplete="email"
+               placeholder="np. p.zielinski@gevernova.com">
+        <span class="label-hint">Adres z domeny firmy — <em>nie</em> z @ans-elblag.pl.</span>
+      </div>
+
+      <div class="field">
+        <label class="label" for="haslo">Hasło</label>
+        <input type="password" name="haslo" id="haslo" required autocomplete="new-password" minlength="6">
+        <span class="label-hint">Co najmniej 6 znaków.</span>
+      </div>
+
+      <div class="field">
+        <label class="label" for="haslo2">Powtórz hasło</label>
+        <input type="password" name="haslo2" id="haslo2" required autocomplete="new-password" minlength="6">
+      </div>
+
+      <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center;">Utwórz konto</button>
+
+      <p class="sub mt-3" style="text-align: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line);">
+        Masz już konto? <a href="{{ url_for('auth.login') }}"><strong>Zaloguj się</strong></a>
+      </p>
+    </form>
+  </section>
+</div>
+</body>
+</html>

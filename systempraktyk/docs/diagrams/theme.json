@@ -1,0 +1,13 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#fffdf8",
+    "primaryTextColor": "#1a1f2b",
+    "primaryBorderColor": "#1a1f2b",
+    "lineColor": "#1a1f2b",
+    "secondaryColor": "#f4f1ea",
+    "tertiaryColor": "#e8552d",
+    "background": "#fffdf8",
+    "fontFamily": "DejaVu Sans, sans-serif"
+  }
+}

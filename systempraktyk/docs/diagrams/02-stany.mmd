@@ -1,0 +1,21 @@
+stateDiagram-v2
+    [*] --> Draft : utworzenie
+
+    Draft --> Submitted : student klika "Złóż"
+    Submitted --> UnderReview : opiekun rozpoczyna recenzję
+    Submitted --> Rejected : opiekun odrzuca od razu
+    UnderReview --> Approved : opiekun zatwierdza
+    UnderReview --> Rejected : opiekun odrzuca
+    Rejected --> Draft : autor wraca do poprawek
+
+    Approved --> [*]
+
+    note right of Draft
+        Stan edytowalny przez autora.
+        Walidacja przy próbie złożenia.
+    end note
+
+    note right of Approved
+        Stan końcowy.
+        Pełna historia w workflow_log.
+    end note

@@ -1,5 +1,6 @@
 """
-Trasy główne: strona startowa, pulpit (dashboard) zależny od roli, profil.
+Trasy główne: strona startowa, pulpit (dashboard) zależny od roli, profil,
+podstrony informacyjne (kontakt, regulamin, zasady).
 """
 
 from flask import Blueprint, render_template, redirect, url_for
@@ -12,21 +13,20 @@ main_bp = Blueprint("main", __name__)
 
 
 @main_bp.route("/")
+@login_required
 def index():
-    # Niezalogowany → logowanie; zalogowany → pulpit.
-    if current_user() is None:
-        return redirect(url_for("auth.login"))
-    return redirect(url_for("main.dashboard"))
+    """Strona główna — krótkie powitanie i opis aplikacji."""
+    return render_template("strona_glowna.html", u=current_user())
 
 
-@main_bp.route("/dashboard")
+@main_bp.route("/praktyki")
+@main_bp.route("/dashboard")  # zachowujemy stary adres dla kompatybilności
 @login_required
 def dashboard():
     u = current_user()
 
     if u.rola == "student":
         praktyki = models.praktyki_studenta(u.id)
-        # Dla każdej praktyki dołączamy listę dokumentów + status.
         widok = []
         for p in praktyki:
             dokumenty = models.dokumenty_praktyki(p["id"])
@@ -38,7 +38,6 @@ def dashboard():
 
     if u.rola in ("opiekun_uczelniany", "opiekun_zakladowy"):
         praktyki = models.praktyki_opiekuna(u.id)
-        # Dokumenty oczekujące na recenzję.
         do_recenzji = []
         for p in praktyki:
             for d in models.dokumenty_praktyki(p["id"]):
@@ -65,3 +64,21 @@ def dashboard():
 @login_required
 def profil():
     return render_template("profil.html", u=current_user())
+
+
+@main_bp.route("/kontakt")
+@login_required
+def kontakt():
+    return render_template("kontakt.html")
+
+
+@main_bp.route("/regulamin")
+@login_required
+def regulamin():
+    return render_template("regulamin.html")
+
+
+@main_bp.route("/zasady")
+@login_required
+def zasady():
+    return render_template("zasady.html")

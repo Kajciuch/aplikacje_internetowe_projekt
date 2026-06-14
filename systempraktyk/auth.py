@@ -94,6 +94,51 @@ def login():
     return render_template("login.html")
 
 
+# ----------------------------------------------------------------------------
+#  Rejestracja — dostępna TYLKO dla opiekunów zakładowych
+#  (studenci, pracownicy ANS i dziekanat są zakładani przez dziekanat).
+# ----------------------------------------------------------------------------
+@auth_bp.route("/rejestracja", methods=["GET", "POST"])
+def register():
+    if current_user():
+        return redirect(url_for("main.dashboard"))
+
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        imie = request.form.get("imie", "").strip()
+        nazwisko = request.form.get("nazwisko", "").strip()
+        haslo = request.form.get("haslo", "")
+        haslo2 = request.form.get("haslo2", "")
+
+        bledy = []
+        if not imie or not nazwisko:
+            bledy.append("Podaj imię i nazwisko.")
+
+        blad_email = models.waliduj_email_dla_roli(email, "opiekun_zakladowy")
+        if blad_email:
+            bledy.append(blad_email)
+        elif models.get_user_by_email(email):
+            bledy.append(f"Konto z adresem {email} już istnieje.")
+
+        if len(haslo) < 6:
+            bledy.append("Hasło musi mieć co najmniej 6 znaków.")
+        elif haslo != haslo2:
+            bledy.append("Hasła nie są takie same.")
+
+        if bledy:
+            for b in bledy:
+                flash(b, "error")
+        else:
+            uid = models.create_user(email=email, imie=imie, nazwisko=nazwisko,
+                                     rola="opiekun_zakladowy", haslo=haslo)
+            session.clear()
+            session["user_id"] = uid
+            flash("Konto utworzone. Witaj w systemie!", "success")
+            return redirect(url_for("main.dashboard"))
+
+    return render_template("register.html")
+
+
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
     session.clear()

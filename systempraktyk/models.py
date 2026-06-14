@@ -19,10 +19,48 @@ import forms_meta as meta
 # ----------------------------------------------------------------------------
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
+# Domeny e-mailowe uczelni — pilnowane przy zakładaniu kont.
+DOMENA_STUDENT = "@student.ans-elblag.pl"
+DOMENA_PRACOWNIK = "@ans-elblag.pl"
+
 
 def poprawny_email(email: str) -> bool:
     """Prosta, ale skuteczna walidacja adresu e-mail."""
     return bool(email and EMAIL_RE.match(email.strip()))
+
+
+def waliduj_email_dla_roli(email: str, rola: str) -> str | None:
+    """
+    Sprawdza, czy adres e-mail pasuje do roli zgodnie z zasadami ANS:
+      - student            → @student.ans-elblag.pl
+      - opiekun_uczelniany → @ans-elblag.pl
+      - dziekanat          → @ans-elblag.pl
+      - opiekun_zakladowy  → dowolna domena ZEWNĘTRZNA
+                             (nie @ans-elblag.pl ani @student.ans-elblag.pl)
+
+    Zwraca komunikat błędu (po polsku) lub None, jeśli email jest poprawny.
+    """
+    if not poprawny_email(email):
+        return "Nieprawidłowy format adresu e-mail."
+
+    email = email.strip().lower()
+
+    if rola == "student":
+        if not email.endswith(DOMENA_STUDENT):
+            return (f"Konta studenckie muszą mieć adres w domenie "
+                    f"{DOMENA_STUDENT} (np. 21310{DOMENA_STUDENT}).")
+    elif rola in ("opiekun_uczelniany", "dziekanat"):
+        if not email.endswith(DOMENA_PRACOWNIK):
+            return (f"Konta pracownicze muszą mieć adres w domenie "
+                    f"{DOMENA_PRACOWNIK}.")
+        # Pracownik nie może używać puli studenckiej
+        if email.endswith(DOMENA_STUDENT):
+            return f"Adres {DOMENA_STUDENT} jest zarezerwowany dla studentów."
+    elif rola == "opiekun_zakladowy":
+        if email.endswith(DOMENA_PRACOWNIK) or email.endswith(DOMENA_STUDENT):
+            return ("Opiekun zakładowy powinien używać adresu z domeny "
+                    "swojej firmy, a nie z domeny uczelni.")
+    return None
 
 
 # ----------------------------------------------------------------------------

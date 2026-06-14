@@ -6,22 +6,23 @@
    ============================================================================ */
 
 :root {
-  --bg:           #f4f1ea;
-  --paper:        #fffdf8;
-  --ink:          #1a1f2b;
+  --bg:           #f7f6f1;
+  --paper:        #ffffff;
+  --ink:          #1a1f36;
   --ink-soft:     #4a5468;
-  --muted:        #8b8275;
-  --line:         #ddd6c8;
-  --line-soft:    #ebe5d8;
-  --accent:       #e8552d;
-  --accent-deep:  #c2410c;
+  --muted:        #8b8c95;
+  --line:         #e3e0d6;
+  --line-soft:    #efece4;
+  --accent:       #c2410c;
+  --accent-deep:  #9a330a;
   --ok:           #15803d;
   --warn:         #b45309;
   --err:          #b91c1c;
-  --info:         #0369a1;
-  --spine-bg:     #1a1f2b;
-  --spine-ink:    #f4f1ea;
-  --shadow: 0 1px 0 var(--line), 0 8px 24px -16px rgba(26,31,43,.18);
+  --info:         #1e4a8f;
+  --spine-bg:     #1e3a5f;       /* GRANAT ANS — sidebar */
+  --spine-bg-2:   #2c5282;
+  --spine-ink:    #f7f6f1;
+  --shadow: 0 1px 0 var(--line), 0 8px 24px -16px rgba(30,58,95,.12);
 }
 
 *  { box-sizing: border-box; }
@@ -488,3 +489,214 @@ textarea { resize: vertical; min-height: 100px; font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ------- Logo ANS w sidebarze ------------------------------------------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+.brand img {
+  width: 56px;
+  height: 56px;
+  background: var(--spine-ink);
+  border-radius: 8px;
+  padding: 6px;
+  flex-shrink: 0;
+}
+.brand-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.25;
+  color: var(--spine-ink);
+  letter-spacing: -0.01em;
+}
+.brand-text small {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(247,246,241,.6);
+  letter-spacing: .04em;
+  margin-top: 2px;
+}
+
+/* ------- Hero (strona główna) ------------------------------------------- */
+.hero {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 40px 44px;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--spine-bg);
+}
+.hero h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+.hero p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 12px;
+  max-width: 720px;
+}
+.hero-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 16px;
+}
+
+/* ------- Kafelki akcji na stronie głównej ------------------------------- */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.tile {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px;
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.tile:hover {
+  border-color: var(--spine-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -18px rgba(30,58,95,.3);
+}
+.tile-ico {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.tile-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -.01em;
+}
+.tile-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ------- Strony dokumentowe (regulamin, zasady) ------------------------- */
+.document {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 48px 56px;
+  max-width: 880px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.document h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--spine-bg);
+  margin: 32px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.document h2:first-child { margin-top: 0; }
+.document h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--ink);
+  margin: 24px 0 8px;
+}
+.document p { margin: 0 0 12px; text-align: justify; }
+.document ol, .document ul { margin: 8px 0 16px; padding-left: 28px; }
+.document li { margin-bottom: 6px; }
+.document .paragraf {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--accent);
+  margin: 24px 0 8px;
+  text-align: center;
+  letter-spacing: .04em;
+}
+.document .zalaczniki {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 2px solid var(--line);
+}
+.document .zalaczniki h3 { color: var(--spine-bg); }
+
+/* ------- Kontakt ------------------------------------------------------ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.contact-block {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 28px;
+}
+.contact-block h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--spine-bg);
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.contact-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.contact-line .label {
+  min-width: 90px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.contact-line a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.contact-line a:hover { text-decoration: underline; }
+
+/* ------- Sidebar - sekcje grupowe -------------------------------------- */
+.nav-section {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: rgba(247,246,241,.42);
+  padding: 18px 12px 6px;
+}
+
+/* ------- Strona logowania - usuwam stary pomarańcz - akcent zostaje ----- */
+.login-card .sub a { color: var(--accent); font-weight: 500; }
